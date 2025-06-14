@@ -30,14 +30,13 @@ def fetch_price():
         """ % PAIR_ID
     }
     res = requests.post(SUBGRAPH_URL, json=query)
-    try:
-        data = res.json()
-        print("GRAPHQLレスポンス:", json.dumps(data, indent=2))  # ここでレスポンス全体を出力
-        return float(data["data"]["pair"]["token0Price"])
-    except Exception as e:
-        print("エラー発生:", str(e))
-        raise
-
+    
+    # レスポンス内容をファイルへ保存
+    with open("last_response.json", "w") as f:
+        json.dump(res.json(), f, indent=2)
+    
+    data = res.json()
+    return float(data["data"]["pair"]["token0Price"])
 
 def update_history():
     hist = load_json("price_history.json")
