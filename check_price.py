@@ -30,13 +30,17 @@ def fetch_price():
         """ % PAIR_ID
     }
     res = requests.post(SUBGRAPH_URL, json=query)
-    
-    # レスポンス内容をファイルへ保存
-    with open("last_response.json", "w") as f:
-        json.dump(res.json(), f, indent=2)
-    
-    data = res.json()
-    return float(data["data"]["pair"]["token0Price"])
+    try:
+        data = res.json()
+        with open("last_response.json", "w") as f:
+            json.dump(data, f, indent=2)
+        return float(data["data"]["pair"]["token0Price"])
+    except Exception as e:
+        with open("last_response.json", "w") as f:
+            f.write("JSON decode error or no 'data': " + str(e) + "\n")
+            f.write(res.text)  # レスポンス生データ保存
+        raise
+
 
 def update_history():
     hist = load_json("price_history.json")
