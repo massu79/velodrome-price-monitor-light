@@ -22,15 +22,19 @@ def save_json(fn, data):
 def fetch_price():
     query = {
         "query": """
-        {
-            pair(id: \"%s\") {
+        query {
+            pair(id: "%s") {
                 token0Price
             }
         }
         """ % PAIR_ID
     }
     res = requests.post(SUBGRAPH_URL, json=query)
-    return float(res.json()["data"]["pair"]["token0Price"])
+    data = res.json()
+    if "data" in data and data["data"]["pair"]:
+        return float(data["data"]["pair"]["token0Price"])
+    else:
+        raise ValueError("価格データが取得できませんでした: " + str(data))
 
 def update_history():
     hist = load_json("price_history.json")
