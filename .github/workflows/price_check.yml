@@ -28,7 +28,7 @@ jobs:
 
       - name: Save response JSON as artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: last-response
           path: last_response.json
